@@ -1,0 +1,19 @@
+[run]
+source = machine
+omit =
+    # don't care about bundled plugins, they will not be tested
+    machine/plugins/builtin/*
+    machine/asyncio/plugins/builtin/*
+    # we won't test the run script
+    machine/bin/*
+    # we don't care about vendored libs
+    machine/vendor/*
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't care about returning functions from decorator wrappers
+    return f\(\*args, \*\*kwargs\)
