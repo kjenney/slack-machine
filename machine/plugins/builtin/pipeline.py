@@ -50,7 +50,7 @@ class PipelinePlugin(MachineBasePlugin):
         """pipelines: list the current CodePipelines"""
         pipelines = self.list_pipelines()
         for pipeline in pipelines:
-            msg.say(pipeline, in_thread=True)
+            msg.say(pipeline['name'], in_thread=True)
 
     # @listen_to(r"^reply$")
     # def reply_me(self, msg: Message):
