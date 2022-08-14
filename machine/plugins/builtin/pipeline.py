@@ -1,4 +1,5 @@
 import logging
+import boto3
 
 from machine.plugins.decorators import process, route, respond_to, listen_to, require_any_role, on
 from machine.plugins.base import MachineBasePlugin, Message
@@ -7,8 +8,14 @@ from datetime import datetime, timedelta
 logger = logging.getLogger(__name__)
 
 
+
 class PipelinePlugin(MachineBasePlugin):
-    """Example Plugin"""
+    """Pipeline Plugin"""
+
+    def list_pipelines(self):
+        client = boto3.client('codepipeline', region='us-gov-west-1')
+        response = client.list_pipelines()
+        return response['pipelines']
 
     @process("reaction_added")
     def match_reaction(self, event):
@@ -32,18 +39,18 @@ class PipelinePlugin(MachineBasePlugin):
         """I love you: express your love to the bot, it might reciprocate"""
         msg.react("heart")
 
-    # @listen_to(r"^users")
-    # def list_users(self, msg):
-    #     """users: list all users in the Slack Workspace"""
-    #     users = [u.name for u in self.users.values()]
-    #     msg.say(f"{len(users)} Users: {users}")
+    @listen_to(r"^users")
+    def list_users(self, msg):
+        """users: list all users in the Slack Workspace"""
+        users = [u.name for u in self.users.values()]
+        msg.say(f"{len(users)} Users: {users}")
 
-    # @listen_to(r"^wait$")
-    # def nag(self, msg):
-    #     """wait: the bot replies to you using a scheduled message"""
-    #     msg.reply("wait for it", in_thread=True)
-    #     dt = datetime.now() + timedelta(seconds=5)
-    #     msg.reply_scheduled(dt, 'hello', in_thread=True)
+    @listen_to(r"^pipelines$")
+    def nag(self, msg):
+        """pipelines: list the current CodePipelines"""
+        pipelines = self.list_pipelines()
+        for pipeline in pipelines:
+            msg.say(pipeline, in_thread=True)
 
     # @listen_to(r"^reply$")
     # def reply_me(self, msg: Message):
