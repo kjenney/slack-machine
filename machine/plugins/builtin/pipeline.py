@@ -13,7 +13,7 @@ class PipelinePlugin(MachineBasePlugin):
     """Pipeline Plugin"""
 
     def list_pipelines(self):
-        client = boto3.client('codepipeline', region='us-gov-west-1')
+        client = boto3.client('codepipeline', region_name='us-gov-west-1')
         response = client.list_pipelines()
         return response['pipelines']
 
